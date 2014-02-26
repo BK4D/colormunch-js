@@ -31,6 +31,8 @@ var cm = new ColorMunch('absolute/path/to/proxy/file');
 #### Listening for events
 
 At a minimum listen for the ColorMunchEvent.COMPLETE event
+You can also listen for the ColorMunchEvent.FAILED event
+See [https://github.com/BK4D/colormunch-js#using-the-events](Using the events)
 
 Events can be added either with 'on' or 'addEventListener'
 
