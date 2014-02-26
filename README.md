@@ -15,6 +15,7 @@ Getting Started
 This is a quick guide to getting up and running with ColorMunch-JS and the Adobe Kuler API.
 
 Very simply:
+
 1. Create a ColorMunch instance
 2. Add event listeners
 3. Call one of the load or search methods
@@ -24,7 +25,7 @@ Very simply:
 
 ```javascript
 // creates a new ColorMunch instance with your proxy file
-var cm = new ColorMunch('absolute/path/to/ColorMunch-proxy-0.1.0.php');
+var cm = new ColorMunch('absolute/path/to/proxy/file');
 ```
 
 #### Listening for events
@@ -84,8 +85,8 @@ document.body.appendChild(themeEl);
 
 // we can access swatch information through a ColorMunchTheme object
 console.log(theme.getTitle());
-var swatch;
-for (var i = 0; i < theme.getSwatchCount(); i++) {
+var swatch, i;
+for (i = 0; i < theme.getSwatchCount(); i++) {
     swatch = theme.getSwatchByIndex(i);
     console.log("- " + swatch.getHexString());
 }
@@ -249,3 +250,7 @@ With either of the above methods, you could trace out the comment's properties l
 console.log(comment.getText());
 console.log('by ' + comment.getAuthor() + ' on ' + comment.getPostedAt());
 ```
+
+Basic Example
+-------
+http://jsfiddle.net/6CxVL/
