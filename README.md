@@ -5,9 +5,9 @@ ColorMunch-JS is a Javascript library that makes retrieving themes, colors and c
 
 **Note: You'll need a Kuler API key to use ColorMunch-JS.**
 
-If you don't have an API key then you're out of luck for the time being as they stopped issuing new API keys in May 2013.
+If you don't have an API key then you're out of luck for the time being as they stopped issuing new API keys in May 2013. https://wikidocs.adobe.com/wiki/display/kulerdev/Kuler+API
 
-https://wikidocs.adobe.com/wiki/display/kulerdev/Kuler+API
+![Colored by Adobe Kuler](http://cm.rprdev.com/ku_50pxWtext.png)
 
 Getting Started
 -------
