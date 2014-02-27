@@ -13,6 +13,14 @@ Originally written this as an [ActionScript library](https://code.google.com/p/c
 
 If you don't have an API key then you're out of luck for the time being as they stopped issuing new API keys in May 2013. https://wikidocs.adobe.com/wiki/display/kulerdev/Kuler+API
 
+Reverse Proxy
+-------
+Due to same-origin policy you can't use ColorMunch-JS to load directly from the Kuler API.
+
+I've therefore created a simple reverse proxy (PHP) to be used on the server. Put your API key in there and just pass in the proxy path to the ColorMunch constructor.
+
+See the ColorMunch-proxy.php file for more info.
+
 Getting Started
 -------
 
@@ -29,7 +37,7 @@ Very simply:
 
 ```javascript
 // creates a new ColorMunch instance with your proxy file
-var cm = new ColorMunch('absolute/path/to/proxy/file');
+var cm = new ColorMunch('path/to/proxy/file');
 ```
 
 #### Listening for events
@@ -90,12 +98,12 @@ themeEl.style.height = '100px';
 document.body.appendChild(themeEl);
 
 // we can access swatch information through a ColorMunchTheme instance
-console.log(theme.getTitle());
+console.log(theme.toString());
 var swatch,
 	i;
 for (i = 0; i < theme.getSwatchCount(); i++) {
     swatch = theme.getSwatchByIndex(i);
-    console.log("- " + swatch.getHexString());
+    console.log(swatch.toString());
 }
 ```
 
