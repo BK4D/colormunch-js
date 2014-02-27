@@ -15,16 +15,16 @@ If you don't have an API key then you're out of luck for the time being as they 
 
 Reverse Proxy
 -------
-Due to same-origin policy you can't use ColorMunch-JS to load directly from the Kuler API.
-
-I've therefore created a simple reverse proxy (PHP) to be used on the server. Put your API key in there and just pass in the proxy path to the ColorMunch constructor.
+Due to same-origin policy you can't use ColorMunch-JS to load directly from the Kuler API, so I've created a simple reverse proxy (PHP) to be used on the server. Put your API key in there and just pass in the proxy path to the ColorMunch constructor.
 
 See the ColorMunch-proxy.php file for more info.
 
 Getting Started
 -------
 
-This is a quick guide to getting up and running with ColorMunch-JS and the Adobe Kuler API.
+The uncompressed source is basically self-documented so take a look through and just have a play.
+
+Below is a quick guide to getting up and running with ColorMunch-JS and the Adobe Kuler API.
 
 Very simply:
 
