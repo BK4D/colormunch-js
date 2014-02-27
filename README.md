@@ -236,21 +236,20 @@ Note: the retrieval of the result data should only be made after the ColorMunchE
 **When comments are loaded through the ColorMunch instance**
 
 ```javascript
-// Get a random comments from the result
+// Get a random comment from the result
 var comment = cm.getRandomComment();
 ```
 
 **When comments are loaded through a ColorMunchTheme object**
 
 ```javascript
-// Get a random comments from the result
+// Get a random comment from the result
 var comment = theme.getRandomComment();
 ```
 
-With either of the above methods, you could trace out the comment's properties like this
+With either of the above methods, you can log comment like this
 
 ```javascript
-// Get a random comments from the result
 console.log(comment.toString());
 ```
 
