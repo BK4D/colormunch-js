@@ -341,22 +341,24 @@ function ColorMunch(proxyUrl) {
         if (themeCount > 0) {
             for (var i = 0; i < themeCount; i++) {
                 var theme = themesData[i];
-                _themes.push(new ColorMunchTheme(
-                    theme.themeID,
-                    theme.themeTitle,
-                    theme.description,
-                    theme.themeImage,
-                    theme.link,
-                    theme.themeCreatedAt,
-                    theme.themeEditedAt,
-                    theme.themeTags,
-                    theme.themeRating,
-                    theme.themeDownloadCount,
-                    theme.themeAuthor.authorID,
-                    theme.themeAuthor.authorLabel,
-                    theme.themeSwatches.swatch,
-                    _proxyUrl
-                ));
+                if (theme.themeSwatches.swatch) {
+                    _themes.push(new ColorMunchTheme(
+                        theme.themeID,
+                        theme.themeTitle,
+                        theme.description,
+                        theme.themeImage,
+                        theme.link,
+                        theme.themeCreatedAt,
+                        theme.themeEditedAt,
+                        theme.themeTags,
+                        theme.themeRating,
+                        theme.themeDownloadCount,
+                        theme.themeAuthor.authorID,
+                        theme.themeAuthor.authorLabel,
+                        theme.themeSwatches.swatch,
+                        _proxyUrl
+                    ));
+                }
             }
             _busy = false;
             self.emit(ColorMunchEvent.COMPLETE, { detail: { message: "Themes loaded and ready" } });
@@ -1545,7 +1547,7 @@ function ColorMunchFeedLoader(proxyUrl) {
         document.body.removeChild(_rssTempScript);
         window[_fnName] = null;
         _rssTempScript = null;
-        if ((response.items) || _rssLoadAttempts++ > 5) {
+        if ((response.items)) {
             _response = response;
             self.emit(ColorMunchEvent.COMPLETE, { detail: { message: 'Complete', data: response } });
         }
