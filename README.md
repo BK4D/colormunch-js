@@ -1,7 +1,11 @@
 ColorMunch-JS v0.1
 ==========
 
+![ColorMunch](http://farm4.static.flickr.com/3532/3797501005_f21396ea73.jpg)
+
 ColorMunch-JS is a Javascript library that makes retrieving themes, colors and comments from the Adobe Kuler API easy.
+
+Originally written this as an [ActionScript library](https://code.google.com/p/colormunch/) back in the day, I've updated to JS for a personal project.
 
 **Note: You'll need a Kuler API key to use ColorMunch-JS.**
 
