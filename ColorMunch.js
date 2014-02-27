@@ -9,7 +9,7 @@
 /**
  * Create a new ColorMunch instance
  *
- * @param proxyUrl Absolute path to the php proxy file
+ * @param proxyUrl Path to the reverse proxy file on your server
  * @constructor
  *
  */
@@ -23,22 +23,18 @@ function ColorMunch(proxyUrl) {
     }
 
 
-    // Whitespace trim util if native method doesn't exist
-    String.prototype.trim = String.prototype.trim || function trim() { return this.replace(/^\s+|\s+$/g, ''); };
-
-
     // ************************************************************************
     // PRIVATE VARIABLES
     // ***********************************************************************
 
     var self = this,
-        // The API url for retrieving a themes list
+        // The API url for retrieving themes
         LIST_URL = "https://kuler-api.adobe.com/feeds/rss/get.cfm",
 
         // The API url for searching
         SEARCH_URL = "https://kuler-api.adobe.com/rss/search.cfm",
 
-        // The API url for retrieving a comments
+        // The API url for retrieving comments
         COMMENTS_URL = "https://kuler-api.adobe.com/rss/comments.cfm",
 
         // RegExp pattern for validating email address
@@ -47,16 +43,16 @@ function ColorMunch(proxyUrl) {
         // RegExp pattern for matching a hex color in the format 0xFFFFFF or FFFFFF
         REGEXP_HEX = /\b0x(?:[0-9A-Fa-f]{6})\b/g,
 
-        // RegExp pattern for matching themeId and userId (both are 6 or 7 digit values)
+        // RegExp pattern for matching themeId and userId
         REGEXP_THEME_USER_ID = /^[-+]?\d*$/,
 
         // RegExp pattern for matching all html tags
         REGEXP_HTML_TAGS = /<.*?>/g,
 
-        // Array to store Theme objects from the themes result XML
+        // Array to store ColorMunchTheme objects from the themes result
         _themes = [],
 
-        // Array to store Comment objects from the comments result XML
+        // Array to store ColorMunchComment objects from the comments result
         _comments = [],
 
         // The Boolean value for whether an API call is currently in progress already
@@ -65,7 +61,7 @@ function ColorMunch(proxyUrl) {
         // The loader for communicating with the proxy
         _feedLoader = null,
 
-        // Url to the proxy file on your server
+        // Url to the reverse proxy file on your server
         _proxyUrl = proxyUrl;
 
 
@@ -603,6 +599,17 @@ function ColorMunch(proxyUrl) {
         return _busy;
     };
 
+
+    /**
+     * Get the feed loader object
+     *
+     * @return ColorMunchFeedLoader
+     *
+     */
+    self.getLoader = function() {
+        return _feedLoader;
+    };
+
 }
 
 
@@ -614,8 +621,8 @@ function ColorMunch(proxyUrl) {
  */
 ColorMunch.prototype.getData = function() {
     return {
-        themes: this.getAllThemes(),
-        comments: this.getAllComments()
+        themes: this.getThemes(),
+        comments: this.getComments()
     };
 };
 
@@ -690,7 +697,6 @@ ColorMunch.TIME_SPAN = 0;
 function ColorMunchComment(text, author, postedAt) {
 
     "use strict";
-    ColorMunchEvent.apply(this);
 
     // ************************************************************************
     // PRIVATE VARIABLES
@@ -746,7 +752,6 @@ function ColorMunchComment(text, author, postedAt) {
         return _postedAt;
     };
 
-
 }
 
 /**
@@ -781,7 +786,7 @@ ColorMunchComment.prototype.toString = function() {
  * Properties can be read via explicit getters
  *
  * Creates a new Swatch
- * @param hexColour  The hex colour value
+ * @param hexColor  The hex colour value
  * @param colorMode  The colour mode
  * @param channel1  The Channel 1 value
  * @param channel2  The Channel 2 value
@@ -790,10 +795,9 @@ ColorMunchComment.prototype.toString = function() {
  * @param swatchIndex  The swatch index
  * @constructor
  */
-function ColorMunchSwatch(hexColour, colorMode, channel1, channel2, channel3, channel4, swatchIndex) {
+function ColorMunchSwatch(hexColor, colorMode, channel1, channel2, channel3, channel4, swatchIndex) {
 
     "use strict";
-    ColorMunchEvent.apply(this);
 
     // ************************************************************************
     // PRIVATE VARIABLES
@@ -801,8 +805,8 @@ function ColorMunchSwatch(hexColour, colorMode, channel1, channel2, channel3, ch
 
     var self = this,
         _swatchElement = null,
-        _hexIntString = (hexColour.substr(0, 2) === '0x') ? hexColour : '0x' + hexColour,
-        _hexString = (hexColour.substr(0, 2) === '0x') ? '#' + hexColour.substr(2) : '#' + hexColour,
+        _hexIntString = (hexColor.substr(0, 2) === '0x') ? hexColou : '0x' + hexColor,
+        _hexColor = (hexColor.substr(0, 2) === '0x') ? hexColor.substr(2) : hexColor,
         _hexInt = parseInt(_hexIntString),
         _colorMode = colorMode,
         _swatchIndex = parseInt(swatchIndex, 10),
@@ -828,24 +832,15 @@ function ColorMunchSwatch(hexColour, colorMode, channel1, channel2, channel3, ch
     // PUBLIC GETTERS
     // ************************************************************************
 
-    /**
-     * Get the hex integer value of this swatch
-     *
-     * @return Hex value integer
-     *
-     */
-    self.getHexInt = function() {
-        return _hexInt;
-    };
 
     /**
-     * Get the hex string value of this swatch
+     * Get the hex value of this swatch
      *
      * @return Hex value string
      *
      */
-    self.getHexString = function() {
-        return _hexString;
+    self.getHexColor = function() {
+        return _hexColor;
     };
 
     /**
@@ -913,8 +908,8 @@ function ColorMunchSwatch(hexColour, colorMode, channel1, channel2, channel3, ch
             } else {
                 _swatchElement.setAttribute('class', 'cm-swatch');
             }
-            _swatchElement.style.backgroundColor = _hexString;
-            _swatchElement.innerHTML = '<span class="cm-swatch-label">' + _hexString + '</span>';
+            _swatchElement.style.backgroundColor = '#' + _hexColor;
+            _swatchElement.innerHTML = '<span class="cm-swatch-label">' + _hexColor + '</span>';
         }
         return _swatchElement;
     };
@@ -926,7 +921,7 @@ function ColorMunchSwatch(hexColour, colorMode, channel1, channel2, channel3, ch
      * @return boolean for whether this colour is dark (true) or light (false)
      *
      */
-    self.getIsDark = function() {
+    self.isDark = function() {
         return _isDark;
     };
 
@@ -941,14 +936,13 @@ function ColorMunchSwatch(hexColour, colorMode, channel1, channel2, channel3, ch
  */
 ColorMunchSwatch.prototype.getData = function() {
     return {
-        hexInt: this.getHexInt(),
-        hexString: this.getHexString(),
+        hexColor: this.getHexColor(),
         colorMode: this.getColorMode(),
         channels: this.getChannels(),
         rgb: this.getRGB(),
         index: this.getIndex(),
         element: this.getElement(),
-        isDark: this.getIsDark()
+        isDark: this.isDark()
     };
 };
 
@@ -983,7 +977,7 @@ ColorMunchSwatch.prototype.toString = function() {
  * @param themeAuthorId  The theme author id
  * @param themeAuthor  The theme author name
  * @param swatches  The swatches array
- * @param proxyUrl The url of the php proxy file
+ * @param proxyUrl The url of the reverse proxy file
  * @constructor
  */
 function ColorMunchTheme(themeId, themeTitle, themeDescription, themeImage, themeLink, themeCreatedDate, themeEditedDate, themeTags, themeRating, themeDownloadCount, themeAuthorId, themeAuthor, swatches, proxyUrl) {
@@ -998,24 +992,24 @@ function ColorMunchTheme(themeId, themeTitle, themeDescription, themeImage, them
     var self = this,
         _themeElement = null,
         _proxyUrl = proxyUrl,
-        _themeId = themeId,
-        _themeTitle = themeTitle,
-        _themeDescription = themeDescription,
-        _themeImage = themeImage,
-        _themeLink = themeLink,
-        _themeRating = themeRating,
-        _themeDownloadCount = themeDownloadCount,
-        _themeAuthor = themeAuthor,
-        _themeAuthorId = themeAuthorId,
-        _themeTags = themeTags.split(", "),
-        _themeCreatedDate = new Date(themeCreatedDate.substr(4, 2) + "/" + themeCreatedDate.substr(6, 2) + "/" + themeCreatedDate.substr(0, 4)),
-        _themeEditedDate = new Date(themeEditedDate.substr(4, 2) + "/" + themeEditedDate.substr(6, 2) + "/" + themeEditedDate.substr(0, 4)),
+        _id = themeId,
+        _title = themeTitle,
+        _description = themeDescription,
+        _image = themeImage,
+        _link = themeLink,
+        _rating = themeRating,
+        _downloadCount = themeDownloadCount,
+        _author = themeAuthor,
+        _authorId = themeAuthorId,
+        _tags = themeTags.split(", "),
+        _createdDate = new Date(themeCreatedDate.substr(4, 2) + "/" + themeCreatedDate.substr(6, 2) + "/" + themeCreatedDate.substr(0, 4)),
+        _editedDate = new Date(themeEditedDate.substr(4, 2) + "/" + themeEditedDate.substr(6, 2) + "/" + themeEditedDate.substr(0, 4)),
         _swatches = [],
         _commentsFeed = null,
         _commentsAreLoaded = false;
 
-    if (_themeTags.length === 1 && _themeTags[0] === "") {
-        _themeTags.length = 0;
+    if (_tags.length === 1 && _tags[0] === "") {
+        _tags.length = 0;
     }
 
     __parseSwatches(swatches);
@@ -1140,7 +1134,7 @@ function ColorMunchTheme(themeId, themeTitle, themeDescription, themeImage, them
      *
      */
     self.getId = function() {
-        return _themeId;
+        return _td;
     };
 
     /**
@@ -1150,7 +1144,7 @@ function ColorMunchTheme(themeId, themeTitle, themeDescription, themeImage, them
      *
      */
     self.getTitle = function() {
-        return _themeTitle;
+        return _title;
     };
 
     /**
@@ -1160,7 +1154,7 @@ function ColorMunchTheme(themeId, themeTitle, themeDescription, themeImage, them
      *
      */
     self.getDescription = function() {
-        return _themeDescription;
+        return _description;
     };
 
     /**
@@ -1172,7 +1166,7 @@ function ColorMunchTheme(themeId, themeTitle, themeDescription, themeImage, them
      *
      */
     self.getImage = function() {
-        return _themeImage;
+        return _image;
     };
 
     /**
@@ -1220,7 +1214,7 @@ function ColorMunchTheme(themeId, themeTitle, themeDescription, themeImage, them
      *
      */
     self.getLink = function() {
-        return _themeLink;
+        return _link;
     };
 
     /**
@@ -1230,7 +1224,7 @@ function ColorMunchTheme(themeId, themeTitle, themeDescription, themeImage, them
      *
      */
     self.getAuthor = function() {
-        return _themeAuthor;
+        return _author;
     };
 
     /**
@@ -1240,7 +1234,7 @@ function ColorMunchTheme(themeId, themeTitle, themeDescription, themeImage, them
      *
      */
     self.getAuthorId = function() {
-        return _themeAuthorId;
+        return _authorId;
     };
 
     /**
@@ -1250,7 +1244,7 @@ function ColorMunchTheme(themeId, themeTitle, themeDescription, themeImage, them
      *
      */
     self.getDownloadCount = function() {
-        return _themeDownloadCount;
+        return _downloadCount;
     };
 
     /**
@@ -1260,7 +1254,7 @@ function ColorMunchTheme(themeId, themeTitle, themeDescription, themeImage, them
      *
      */
     self.getRating = function() {
-        return _themeRating;
+        return _rating;
     };
 
     /**
@@ -1270,7 +1264,7 @@ function ColorMunchTheme(themeId, themeTitle, themeDescription, themeImage, them
      *
      */
     self.getTags = function() {
-        return _themeTags;
+        return _tags;
     };
 
     /**
@@ -1280,7 +1274,7 @@ function ColorMunchTheme(themeId, themeTitle, themeDescription, themeImage, them
      *
      */
     self.getCreatedDate = function() {
-        return _themeCreatedDate;
+        return _createdDate;
     };
 
     /**
@@ -1290,7 +1284,7 @@ function ColorMunchTheme(themeId, themeTitle, themeDescription, themeImage, them
      *
      */
     self.getEditedDate = function() {
-        return _themeEditedDate;
+        return _editedDate;
     };
 
     /**
@@ -1307,9 +1301,9 @@ function ColorMunchTheme(themeId, themeTitle, themeDescription, themeImage, them
                 i;
 
             _themeElement = document.createElement('div');
-            _themeElement.setAttribute('id', 'cm-theme_' + _themeId);
+            _themeElement.setAttribute('id', 'cm-theme_' + _id);
             _themeElement.setAttribute('class', 'cm-theme');
-            _themeElement.innerHTML = '<span class="cm-theme-label">' + _themeTitle + '</span>';
+            _themeElement.innerHTML = '<span class="cm-theme-label">' + _title + '</span>';
 
             for (i = 0; i < totalSwatches; i++) {
                 swatch = _swatches[i];
@@ -1484,7 +1478,7 @@ ColorMunchEvent.FAILED = "cm.failed";
 /**
  * Utility for loading from the proxy
  *
- * @param proxyUrl Absolute path to the php proxy file
+ * @param proxyUrl Path to the reverse proxy file
  * @constructor
  *
  */
