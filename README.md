@@ -3,6 +3,8 @@ ColorMunch-JS v0.1
 
 ![ColorMunch](http://farm4.static.flickr.com/3532/3797501005_f21396ea73.jpg)
 
+![Colored by Adobe Kuler](http://cm.rprdev.com/ku_50pxWtext.png)
+
 ColorMunch-JS is a Javascript library that makes retrieving themes, colors and comments from the Adobe Kuler API easy.
 
 Originally written this as an [ActionScript library](https://code.google.com/p/colormunch/) back in the day, I've updated to JS for a personal project.
@@ -10,8 +12,6 @@ Originally written this as an [ActionScript library](https://code.google.com/p/c
 **Note: You'll need a Kuler API key to use ColorMunch-JS.**
 
 If you don't have an API key then you're out of luck for the time being as they stopped issuing new API keys in May 2013. https://wikidocs.adobe.com/wiki/display/kulerdev/Kuler+API
-
-![Colored by Adobe Kuler](http://cm.rprdev.com/ku_50pxWtext.png)
 
 Getting Started
 -------
@@ -75,7 +75,7 @@ cm.loadThemes();
 
 When the results from the Kuler API have been retrieved, the data is stored into ColorMunchTheme and ColorMunchSwatch instances.
 
-ColorMunchTheme objects are accessed through your ColorMunch instance, and ColorMunchSwatch objects are in turn accessed through each ColorMunchTheme object.
+ColorMunchTheme instances are accessed through your ColorMunch instance, and ColorMunchSwatch instances are in turn accessed through each ColorMunchTheme instance.
 
 *Note: the retrieval of the result data should only be made after the ColorMunchEvent.COMPLETE event is fired*
 
@@ -89,7 +89,7 @@ themeEl.style.width = '100%';
 themeEl.style.height = '100px';
 document.body.appendChild(themeEl);
 
-// we can access swatch information through a ColorMunchTheme object
+// we can access swatch information through a ColorMunchTheme instance
 console.log(theme.getTitle());
 var swatch,
 	i;
@@ -102,7 +102,7 @@ for (i = 0; i < theme.getSwatchCount(); i++) {
 Using the events
 -------
 
-Custom events are dispatched by the ColorMunch object. Additional info can be retrieved through the events' detail object.
+Custom events are dispatched by the ColorMunch instance. Additional info can be retrieved through the events' detail object.
 
 #### Complete
 
@@ -206,13 +206,13 @@ When loading comments through a ColorMunch instance the loadComments method will
 cm.loadComments(ColorMunch.COMMENTS_BY_THEME_ID, "24198");
 ```
 
-#### Through a ColorMunchTheme object
+#### Through a ColorMunchTheme instance
 
-If you have already loaded a bunch of themes with your ColorMunch instance you can actually get the comments of specific theme(s) in your result by using that ColorMunchTheme objects' loadComments method.
+If you have already loaded a bunch of themes with your ColorMunch instance you can actually get the comments of specific theme(s) in your result by using that ColorMunchTheme instances' loadComments method.
 
-The benefit is that the theme's comments are stored in the Theme object and accessed from there. The same events you would listen for on the ColorMunch instance will be dispatched by the ColorMunchThemeTheme object.
+The benefit is that the theme's comments are stored in the ColorMunchTheme instance and accessed from there. The same events you would listen for on the ColorMunch instance will be dispatched by the ColorMunchThemeTheme instance.
 
-When loading comments through a ColorMunchThemeTheme object the loadComments method will search for comments for that particular theme based on the following parameters:
+When loading comments through a ColorMunchThemeTheme instance the loadComments method will search for comments for that particular theme based on the following parameters:
 
 - startIndex:int (optional) A 0-based index into the list that specifies the first item to display.
     - Default is 0, which displays the first item in the list.
@@ -231,7 +231,7 @@ The difference might not be completely clear at first but hopefully you'll see t
 Retrieving comment results
 -------
 
-When ColorMunch has retrieved the result from the Kuler API it stores the data into ColorMunchComment objects.
+When ColorMunch has retrieved the result from the Kuler API it stores the data into ColorMunchComment instances.
 
 Whichever way you choose to load/access the comments, the getter methods are the same.
 
@@ -244,7 +244,7 @@ Note: the retrieval of the result data should only be made after the ColorMunchE
 var comment = cm.getRandomComment();
 ```
 
-**When comments are loaded through a ColorMunchTheme object**
+**When comments are loaded through a ColorMunchTheme instance**
 
 ```javascript
 // Get a random comment from the result
