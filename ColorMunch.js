@@ -683,7 +683,7 @@ ColorMunch.TIME_SPAN = 0;
 
 
 /**
- * Comment stores all the data of a Kuler theme comment as returned by the API
+ * ColorMunchComment stores all the data of a Kuler theme comment as returned by the API
  * Properties can be read via explicit getters
  *
  * Creates a new Comment
@@ -780,7 +780,7 @@ ColorMunchComment.prototype.toString = function() {
 
 
 /**
- * Swatch stores all the data of a Kuler theme swatch as returned by the API
+ * ColorMunchSwatch stores all the data of a Kuler theme swatch as returned by the API
  * Properties can be read via explicit getters
  *
  * Creates a new Swatch
@@ -958,9 +958,9 @@ ColorMunchSwatch.prototype.toString = function() {
 
 
 /**
- * Theme stores all the data of a Kuler theme as returned by the API
+ * ColorMunchTheme stores all the data of a Kuler theme as returned by the API
  * Properties can be read via explicit getters
- * Each swatch is stored in a Swatch object
+ * Each swatch is stored in a ColorMunchSwatch object
  *
  * Creates a new Theme
  * @param themeId  The theme id
@@ -1013,7 +1013,7 @@ function ColorMunchTheme(themeId, themeTitle, themeDescription, themeImage, them
     __parseSwatches(swatches);
 
     // ************************************************************************
-    // PRIVILEGED METHODS
+    // PUBLIC METHODS - Privileged access to private vars
     // ************************************************************************
 
     /**
@@ -1488,12 +1488,21 @@ function ColorMunchFeedLoader(proxyUrl) {
         throw new Error('ColorMunchFeedLoader(): a valid proxyUrl is required.');
     }
 
+    // ************************************************************************
+    // PRIVATE VARIABLES
+    // ***********************************************************************
+
     var self = this,
         _fnName = '',
         _rssTempScript = null,
         _rssUrl = '',
         _rssLoadAttempts = 0,
         _response = null;
+
+
+    // ************************************************************************
+    // PUBLIC METHODS - Privileged access to private vars
+    // ***********************************************************************
 
     /**
      * Load a Kuler API request via the the proxy
@@ -1515,6 +1524,11 @@ function ColorMunchFeedLoader(proxyUrl) {
         _rssUrl = requestUrl;
         __startRequest();
     };
+
+
+    // ************************************************************************
+    // PRIVATE FUNCTIONS
+    // ***********************************************************************
 
     function __startRequest(isRetry) {
         var fnId = new Date().getTime().toString();
@@ -1552,6 +1566,10 @@ function ColorMunchFeedLoader(proxyUrl) {
         }
     }
 
+
+    // ************************************************************************
+    // PUBLIC GETTERS
+    // ***********************************************************************
 
     /**
      * Get the last response
