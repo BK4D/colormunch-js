@@ -1,4 +1,4 @@
-ColorMunch-JS
+ColorMunch-JS v0.1
 ==========
 
 ColorMunch-JS is a Javascript library that makes retrieving themes, colors and comments from the Adobe Kuler API easy.
@@ -87,7 +87,8 @@ document.body.appendChild(themeEl);
 
 // we can access swatch information through a ColorMunchTheme object
 console.log(theme.getTitle());
-var swatch, i;
+var swatch,
+	i;
 for (i = 0; i < theme.getSwatchCount(); i++) {
     swatch = theme.getSwatchByIndex(i);
     console.log("- " + swatch.getHexString());
@@ -115,11 +116,12 @@ function onResultReady(e) {
 	}
 	else {
 	    // the themes are loaded, you can now access them
-	    var allThemes = cm.getAllThemes();
+	    var allThemes = cm.getThemes(),
+	        i;
 	    console.log(allThemes.length + " themes loaded:");
-	    for (var i = 0; i < allThemes.length; i++) {
+	    for (i = 0; i < allThemes.length; i++) {
 	        var theme = allThemes[i];
-	        trace("- " + theme.getTitle());
+	        console.log(theme.toString());
 	    }
 	}
 }
@@ -249,10 +251,9 @@ With either of the above methods, you could trace out the comment's properties l
 
 ```javascript
 // Get a random comments from the result
-console.log(comment.getText());
-console.log('by ' + comment.getAuthor() + ' on ' + comment.getPostedAt());
+console.log(comment.toString());
 ```
 
 Basic Example
 -------
-http://jsfiddle.net/6CxVL/
+http://jsfiddle.net/6CxVL/3/
