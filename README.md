@@ -170,15 +170,15 @@ As well as loading the various theme lists (most recent, etc) through the loadTh
 
 The searchThemes method will search for themes based on the following parameters:
 
-- filter:String The filter to narrow your search. Options are:
-    - ColorMunch.FILTER_NONE (No filter. Will perform search on theme titles, tags, author names, themeIDs, authorIDs, and hexValues)
+- query:String The search query. Use a simple string term to search on
+- filter:String (optional) The filter to narrow your search. Options are:
+    - ColorMunch.FILTER_NONE (default) No filter. Will perform search on theme titles, tags, author names, themeIDs, authorIDs, and hexValues
     - ColorMunch.FILTER_THEME_ID (Search on a specific themeID)
     - ColorMunch.FILTER_USER_ID (Search on a specific userID)
     - ColorMunch.FILTER_EMAIL (Search on a specific email)
     - ColorMunch.FILTER_TAG (Search on a tag word)
     - ColorMunch.FILTER_HEX (Search on a hex colour value - can be in the format "ABCDEF" or "0xABCDEF")
     - ColorMunch.FILTER_TITLE (Search on a theme title)
-- query:String The search query. Use a simple string term to search on
 - startIndex:int (optional) A 0-based index into the list that specifies the first item to display.
     - Default is 0, which displays the first item in the list.
 - itemsPerPage:int (optional) The maximum number of items to display, in the range 1-100.

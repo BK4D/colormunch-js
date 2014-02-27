@@ -66,7 +66,7 @@ function ColorMunch(proxyUrl) {
 
 
     // ************************************************************************
-    // PRIVILEGED METHODS
+    // PUBLIC METHODS - Privileged access to the private vars
     // ************************************************************************
 
     /**
@@ -118,31 +118,29 @@ function ColorMunch(proxyUrl) {
      *      - The result has been parsed and the can now to be read (via the public getters).
      *      - If event.detail.empty === true then there were no results
      *
-     * @param filter The filter to narrow your search. Options are:
-     *              - ColorMunch.FILTER_NONE (No filter. Will perform search on theme titles, tags, author names, themeIDs, authorIDs, and hexValues)
+     * @param query The search query. Use a simple string term to search on.
+     * @param filter (optional) The filter to narrow your search. Options are:
+     *              - ColorMunch.FILTER_NONE (default) (No filter. Will perform search on theme titles, tags, author names, themeIDs, authorIDs, and hexValues)
      *              - ColorMunch.FILTER_THEME_ID (Search on a specific themeID)
      *              - ColorMunch.FILTER_USER_ID (Search on a specific userID)
      *              - ColorMunch.FILTER_EMAIL (Search on a specific email)
      *              - ColorMunch.FILTER_TAG (Search on a tag term)
      *              - ColorMunch.FILTER_HEX (Search on a hex colour value - can be in the format "ABCDEF" or "0xABCDEF")
      *              - ColorMunch.FILTER_TITLE (Search on a theme title)
-     * @param query The search query. Use a simple string term to search on.
      * @param startIndex (optional) A 0-based index into the list that specifies the first item to display.
      *              - Default is 0, which displays the first item in the list.
      * @param itemsPerPage (optional) The maximum number of items to display, in the range 1-100.
      *              - Default is 20.
      *
      */
-    self.searchThemes = function (filter, query, startIndex, itemsPerPage) {
+    self.searchThemes = function (query, filter, startIndex, itemsPerPage) {
         // check required args
-        if (filter === undefined || filter === null) {
-            throw new Error("searchThemes(): filter argument is required.");
-        }
-        if (query === undefined || query === null) {
-            throw new Error("searchThemes(): query argument is required.");
+        if (query === undefined || query === null || typeof query !== 'string' || query === '') {
+            throw new Error("searchThemes(): query argument is required and cannot be an empty string.");
         }
 
         // set defaults
+        filter = (filter !== undefined && filter !== null) ? filter : ColorMunch.FILTER_NONE;
         startIndex = (startIndex !== undefined && startIndex !== null) ? startIndex : ColorMunch.START_INDEX;
         itemsPerPage = (itemsPerPage !== undefined && itemsPerPage !== null) ? itemsPerPage : ColorMunch.ITEMS_PER_PAGE;
 
