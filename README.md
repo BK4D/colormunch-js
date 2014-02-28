@@ -43,7 +43,9 @@ var cm = new ColorMunch('path/to/proxy/file');
 #### Listening for events
 
 At a minimum listen for the ColorMunchEvent.COMPLETE event
+
 You can also listen for the ColorMunchEvent.FAILED event
+
 See [Using the events](https://github.com/BK4D/colormunch-js#using-the-events)
 
 Events can be added either with 'on' or 'addEventListener'
@@ -60,16 +62,16 @@ cm.addEventListener(ColorMunchEvent.FAILED, failedEventHandler);
 
 The loadThemes method loads a set of themes based on the following parameters:
 
-- listType:String (optional) The type of list to return. Options are:
+- listType (optional) The type of list to return. Options are:
     - ColorMunch.LIST_MOST_RECENT (default)
     - ColorMunch.LIST_POPULAR
     - ColorMunch.LIST_HIGHEST_RATED
     - ColorMunch.LIST_RANDOM
-- startIndex:int (optional) A 0-based index into the list that specifies the first item to display.
+- startIndex (optional) A 0-based index into the list that specifies the first item to display.
     - Default is 0, which displays the first item in the list.
-- timeSpan:int (optional) Value in days to limit the set of themes retrieved.
+- timeSpan (optional) Value in days to limit the set of themes retrieved.
     - Default is 0, which retrieves all themes without time limit.
-- itemsPerPage:int (optional) The maximum number of items to display, in the range 1-100.
+- itemsPerPage (optional) The maximum number of items to display, in the range 1-100.
     - Default is 20.
 
 Because all parameters of the loadThemes() method are optional, as a very basic option you can call it without any parameters.
@@ -170,8 +172,8 @@ As well as loading the various theme lists (most recent, etc) through the loadTh
 
 The searchThemes method will search for themes based on the following parameters:
 
-- query:String The search query. Use a simple string term to search on
-- filter:String (optional) The filter to narrow your search. Options are:
+- query The search query. Use a simple string term to search on
+- filter (optional) The filter to narrow your search. Options are:
     - ColorMunch.FILTER_NONE (default) No filter. Will perform search on theme titles, tags, author names, themeIDs, authorIDs, and hexValues
     - ColorMunch.FILTER_THEME_ID (Search on a specific themeID)
     - ColorMunch.FILTER_USER_ID (Search on a specific userID)
@@ -179,9 +181,9 @@ The searchThemes method will search for themes based on the following parameters
     - ColorMunch.FILTER_TAG (Search on a tag word)
     - ColorMunch.FILTER_HEX (Search on a hex colour value - can be in the format "ABCDEF" or "0xABCDEF")
     - ColorMunch.FILTER_TITLE (Search on a theme title)
-- startIndex:int (optional) A 0-based index into the list that specifies the first item to display.
+- startIndex (optional) A 0-based index into the list that specifies the first item to display.
     - Default is 0, which displays the first item in the list.
-- itemsPerPage:int (optional) The maximum number of items to display, in the range 1-100.
+- itemsPerPage (optional) The maximum number of items to display, in the range 1-100.
     - Default is 20.
 
 ```javascript
@@ -198,15 +200,15 @@ You can load comments in a couple of different ways...
 
 When loading comments through a ColorMunch instance the loadComments method will search for comments based on the following parameters:
 
-- filter:String The filter to search by. Options are:
+- filter (required) The filter to search by. Options are:
     - ColorMunch.COMMENTS_BY_EMAIL (comments are retrieved for all themes created by this user)
     - ColorMunch.COMMENTS_BY_THEME_ID (comments are retrieved for the specified theme)
-- query:String The value associated with the filter.
+- query (required) The value associated with the filter.
     - If the filter is ColorMunch.COMMENTS_BY_EMAIL then query would be a users' email address
     - If the filter is ColorMunch.COMMENTS_BY_THEME_ID then the query would be a themeID.
-- startIndex:int (optional) A 0-based index into the list that specifies the first item to display.
+- startIndex (optional) A 0-based index into the list that specifies the first item to display.
     - Default is 0, which displays the first item in the list.
-- itemsPerPage:int (optional) The maximum number of items to display, in the range 1-100.
+- itemsPerPage (optional) The maximum number of items to display, in the range 1-100.
     - Default is 20.
 
 ```javascript
