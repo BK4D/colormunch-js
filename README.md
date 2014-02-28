@@ -89,25 +89,60 @@ ColorMunchTheme instances are accessed through your ColorMunch instance, and Col
 
 *Note: the retrieval of the result data should only be made after the ColorMunchEvent.COMPLETE event is fired*
 
-Once you start playing around you'll ALL the info available via the getter methods. Here's a couple of very simple ones.
+Once you start playing around you'll discover **all** the info available via the getter methods. Here's a couple of very simple ones:
 
 ```javascript
-// Grab a random theme from the result set, and place its sprite on the stage
+// Grab a random theme from the result set
+var theme = cm.getRandomTheme();
+console.log(theme.toString());
+// we can access swatch information through a ColorMunchTheme instance
+var swatches = theme.getSwatches(),
+	swatch,
+	i;
+for (i = 0; i < swatches.length; i++) {
+    swatch = swatches[i];
+    console.log(swatch.toString());
+}
+```
+
+ColorMunchThemes and ColorMunchSwatch instances have a getElement method, which returns a DOM element you can use.
+
+When you call getElement on a ColorMunchTheme it will call getElement on all its swatches and build a theme element
+
+The theme element markup looks like the following:
+
+```html
+<div id="cm-theme_3582331" class="cm-theme">
+	<span class="cm-theme-label">Standing O</span>
+	<div class="cm-swatch cm-swatch--1" style="background-color: rgb(66, 222, 181);">
+		<span class="cm-swatch-label">42DEB5</span>
+	</div>
+	<div class="cm-swatch cm-swatch--2" style="background-color: rgb(232, 97, 85);">
+		<span class="cm-swatch-label">E86155</span>
+	</div>
+	<div class="cm-swatch cm-swatch--dark cm-swatch--3" style="background-color: rgb(106, 191, 187);">
+		<span class="cm-swatch-label">6ABFBB</span>
+	</div>
+	<div class="cm-swatch cm-swatch--4" style="background-color: rgb(215, 224, 242);">
+		<span class="cm-swatch-label">D7E0F2</span>
+	</div>
+	<div class="cm-swatch cm-swatch--dark cm-swatch--5" style="background-color: rgb(50, 41, 71);">
+		<span class="cm-swatch-label">322947</span>
+	</div>
+</div>
+```
+
+For example:
+
+```javascript
+// Grab a random theme from the result set, and place its element on the stage
 var theme = cm.getRandomTheme();
 var themeEl = theme.getElement();
 themeEl.style.width = '100%';
 themeEl.style.height = '100px';
 document.body.appendChild(themeEl);
-
-// we can access swatch information through a ColorMunchTheme instance
-console.log(theme.toString());
-var swatch,
-	i;
-for (i = 0; i < theme.getSwatchCount(); i++) {
-    swatch = theme.getSwatchByIndex(i);
-    console.log(swatch.toString());
-}
 ```
+
 
 Using the events
 -------
@@ -196,7 +231,7 @@ Loading comments
 
 You can load comments in a couple of different ways...
 
-### Through a ColorMunch instance
+#### Through a ColorMunch instance
 
 When loading comments through a ColorMunch instance the loadComments method will search for comments based on the following parameters:
 
@@ -238,8 +273,7 @@ theme.loadComments();
 
 The difference might not be completely clear at first but hopefully you'll see the benefit of this option.
 
-Retrieving comment results
--------
+### Retrieving the comment results
 
 When ColorMunch has retrieved the result from the Kuler API it stores the data into ColorMunchComment instances.
 
