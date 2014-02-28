@@ -223,7 +223,14 @@ The searchThemes method will search for themes based on the following parameters
 
 ```javascript
 // Using the hex color filter, perform a search for themes that contain a black swatch
-cm.searchThemes(ColorMunch.FILTER_HEX, "0x000000")
+cm.searchThemes("0x000000", ColorMunch.FILTER_HEX);
+
+// Or get a tag from a theme and search for other themes containing that tag
+var theme = cm.getRandomTheme();
+var tags = theme.getTags();
+if (tags.length > 0) {
+	cm.searchThemes(tags[0], ColorMunch.FILTER_TAG);
+}
 ```
 
 Loading comments
