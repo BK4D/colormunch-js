@@ -49,6 +49,12 @@ function ColorMunch(proxyUrl) {
         // RegExp pattern for matching all html tags
         REGEXP_HTML_TAGS = /<.*?>/g,
 
+        // default theme element template
+        DEFAULT_THEME_TEMPLATE = '<div id="cm-theme_{{id}}" class="cm-theme"><span class="cm-theme-label">{{title}}</span>{{swatches}}</div>',
+
+        // default swatch element template (you can use any of the properties found in the getData() result object - except for element)
+        DEFAULT_SWATCH_TEMPLATE = '<div class="cm-swatch cm-swatch--{{index}} cm-swatch--dark-{{isDark}}" style="background-color:{{hexColor}};"><span class="cm-swatch-label">{{hexColor}}</span></div>',
+
         // Array to store ColorMunchTheme objects from the themes result
         _themes = [],
 
@@ -63,6 +69,84 @@ function ColorMunch(proxyUrl) {
 
         // Url to the reverse proxy file on your server
         _proxyUrl = proxyUrl;
+
+
+    // ************************************************************************
+    // STATIC PROPERTIES
+    // ***********************************************************************
+
+    // List type for retrieving the highest rated themes
+    self.constructor.LIST_HIGHEST_RATED = "rating";
+
+    // List type for retrieving the mos recent themes
+    self.constructor.LIST_MOST_RECENT = "recent";
+
+    // List type for retrieving random themes
+    self.constructor.LIST_RANDOM = "random";
+
+    // List type for retrieving the most popular themes
+    self.constructor.LIST_POPULAR = "popular";
+
+
+    // Clears the search filter
+    self.constructor.FILTER_NONE = "";
+
+    // themeID search filter
+    self.constructor.FILTER_THEME_ID = "themeID";
+
+    // userID search filter
+    self.constructor.FILTER_USER_ID = "userID";
+
+    // email search filter
+    self.constructor.FILTER_EMAIL = "email";
+
+    // tag search filter
+    self.constructor.FILTER_TAG = "tag";
+
+    // hex search filter
+    self.constructor.FILTER_HEX = "hex";
+
+    // Theme title search filter
+    self.constructor.FILTER_TITLE = "title";
+
+
+    // search type for retrieving comments by themeID
+    self.constructor.COMMENTS_BY_THEME_ID = "themeID";
+
+    // search type for retrieving comments by author email
+    self.constructor.COMMENTS_BY_EMAIL = "email";
+
+
+    // default itemsPerPage value
+    self.constructor.ITEMS_PER_PAGE = 20;
+
+    // default startIndex value
+    self.constructor.START_INDEX = 0;
+
+    // default timeSpan value
+    self.constructor.TIME_SPAN = 0;
+
+
+    // set template to the default
+    // You can override and use any of the properties found in the getData() result object
+    self.constructor.THEME_TEMPLATE = DEFAULT_THEME_TEMPLATE;
+
+    // set template to the default
+    // You can override and use any of the properties found in the getData() result object
+    self.constructor.SWATCH_TEMPLATE = DEFAULT_SWATCH_TEMPLATE;
+
+
+    // ************************************************************************
+    // STATIC METHODS - Privileged access to the private vars
+    // ************************************************************************
+
+    self.constructor.getDefaultThemeTemplate = function() {
+        return DEFAULT_THEME_TEMPLATE;
+    };
+
+    self.constructor.getDefaultSwatchTemplate = function() {
+        return DEFAULT_SWATCH_TEMPLATE;
+    };
 
 
     // ************************************************************************
@@ -540,6 +624,38 @@ function ColorMunch(proxyUrl) {
 
 
     /**
+     * Get the all theme element strings in a single array
+     *
+     * @return An array of theme element strings
+     *
+     */
+    self.getThemeElements = function() {
+        var i,
+            els = [];
+        for (i = 0; i < _themes.length; i++) {
+            els.push(_themes[i].getElement());
+        }
+        return els;
+    };
+
+    /**
+     * Get the all theme element strings in a single array
+     *
+     * @return An array of theme element strings
+     *
+     */
+    self.getThemeElementStrings = function(refresh) {
+        refresh = (refresh === true) ? refresh : false;
+        var i,
+            strings = [];
+        for (i = 0; i < _themes.length; i++) {
+            strings.push(_themes[i].getElementString(refresh));
+        }
+        return strings;
+    };
+
+
+    /**
      * Get the total number of comments in the feed result
      *
      * @return The total number of comments
@@ -608,77 +724,21 @@ function ColorMunch(proxyUrl) {
         return _feedLoader;
     };
 
+    /**
+     * Get main properties in a single data object
+     *
+     * @return Object
+     *
+     */
+    self.getData = function() {
+        return {
+            themes: _themes,
+            comments: _comments
+        };
+    };
+
 }
 
-
-/**
- * Get main properties in a single data object
- *
- * @return Object
- *
- */
-ColorMunch.prototype.getData = function() {
-    return {
-        themes: this.getThemes(),
-        comments: this.getComments()
-    };
-};
-
-
-// ************************************************************************
-// STATIC PROPERTIES
-// ***********************************************************************
-
-// List type for retrieving the highest rated themes
-ColorMunch.LIST_HIGHEST_RATED = "rating";
-
-// List type for retrieving the mos recent themes
-ColorMunch.LIST_MOST_RECENT = "recent";
-
-// List type for retrieving random themes
-ColorMunch.LIST_RANDOM = "random";
-
-// List type for retrieving the most popular themes
-ColorMunch.LIST_POPULAR = "popular";
-
-
-// Clears the search filter
-ColorMunch.FILTER_NONE = "";
-
-// themeID search filter
-ColorMunch.FILTER_THEME_ID = "themeID";
-
-// userID search filter
-ColorMunch.FILTER_USER_ID = "userID";
-
-// email search filter
-ColorMunch.FILTER_EMAIL = "email";
-
-// tag search filter
-ColorMunch.FILTER_TAG = "tag";
-
-// hex search filter
-ColorMunch.FILTER_HEX = "hex";
-
-// Theme title search filter
-ColorMunch.FILTER_TITLE = "title";
-
-
-// search type for retrieving comments by themeID
-ColorMunch.COMMENTS_BY_THEME_ID = "themeID";
-
-// search type for retrieving comments by author email
-ColorMunch.COMMENTS_BY_EMAIL = "email";
-
-
-// default itemsPerPage value
-ColorMunch.ITEMS_PER_PAGE = 20;
-
-// default startIndex value
-ColorMunch.START_INDEX = 0;
-
-// default timeSpan value
-ColorMunch.TIME_SPAN = 0;
 
 
 
@@ -750,21 +810,22 @@ function ColorMunchComment(text, author, postedAt) {
         return _postedAt;
     };
 
+    /**
+     * Get main properties in a single data object
+     *
+     * @return Object
+     *
+     */
+    self.getData = function() {
+        return {
+            text: _text,
+            author: _author,
+            postedDate: _posted
+        };
+    };
+
 }
 
-/**
- * Get main properties in a single data object
- *
- * @return Object
- *
- */
-ColorMunchComment.prototype.getData = function() {
-    return {
-        text: this.getText(),
-        author: this.getAuthor(),
-        postedDate: this.getPostedDate()
-    };
-};
 
 /**
  * Override the toString method
@@ -773,6 +834,7 @@ ColorMunchComment.prototype.getData = function() {
  *
  */
 ColorMunchComment.prototype.toString = function() {
+    "use strict";
     return this.getText() + '<br />Author: ' + this.getAuthor() + "<br />Posted: " + this.getPostedAt();
 };
 
@@ -803,6 +865,7 @@ function ColorMunchSwatch(hexColor, colorMode, channel1, channel2, channel3, cha
 
     var self = this,
         _swatchElement = null,
+        _swatchElementString  = "",
         _hexIntString = (hexColor.substr(0, 2) === '0x') ? hexColou : '0x' + hexColor,
         _hexColor = (hexColor.substr(0, 2) === '0x') ? hexColor.substr(2) : hexColor,
         _hexInt = parseInt(_hexIntString),
@@ -913,6 +976,33 @@ function ColorMunchSwatch(hexColor, colorMode, channel1, channel2, channel3, cha
     };
 
     /**
+     * Get the swatch element as a HTML string based on the ColorMunch.SWATCH_TEMPLATE
+     *
+     * @return Swatch element HTML string
+     *
+     */
+    self.getElementString = function(refresh) {
+        if (_swatchElementString === "" || refresh === true) {
+            var tplTags,
+                tag,
+                data,
+                regex,
+                i;
+            data = self.getData();
+            _swatchElementString = ColorMunch.SWATCH_TEMPLATE;
+            tplTags = _swatchElementString.match(/{{\s*[\w\.]+\s*}}/g).map(function(x) { return x.match(/[\w\.]+/)[0]; }).getUnique();
+            for (i = 0; i < tplTags.length; i++) {
+                tag = tplTags[i];
+                if (data.hasOwnProperty(tag)) {
+                    regex = new RegExp('{{' + tag + '}}', 'g');
+                    _swatchElementString  = _swatchElementString .replace(regex, data[tag].toString());
+                }
+            }
+        }
+        return _swatchElementString ;
+    };
+
+    /**
      * Check if this swatch is a dark colour
      * Handy if you're placing text over this colour and want to know whether to use a light or dark colour for the text
      *
@@ -924,25 +1014,24 @@ function ColorMunchSwatch(hexColor, colorMode, channel1, channel2, channel3, cha
     };
 
 
-}
-
-/**
- * Get main properties in a single data object
- *
- * @return Object
- *
- */
-ColorMunchSwatch.prototype.getData = function() {
-    return {
-        hexColor: this.getHexColor(),
-        colorMode: this.getColorMode(),
-        channels: this.getChannels(),
-        rgb: this.getRGB(),
-        index: this.getIndex(),
-        element: this.getElement(),
-        isDark: this.isDark()
+    /**
+     * Get main properties in a single data object
+     *
+     * @return Object
+     *
+     */
+    self.getData = function() {
+        return {
+            hexColor: _hexColor,
+            colorMode: _colorMode,
+            channels: _channels,
+            rgb: _rgb,
+            index: _swatchIndex,
+            isDark: _isDark
+        };
     };
-};
+
+}
 
 /**
  * Override the toString method
@@ -951,6 +1040,7 @@ ColorMunchSwatch.prototype.getData = function() {
  *
  */
 ColorMunchSwatch.prototype.toString = function() {
+    "use strict";
     return this.getHexString();
 };
 
@@ -989,6 +1079,7 @@ function ColorMunchTheme(themeId, themeTitle, themeDescription, themeImage, them
 
     var self = this,
         _themeElement = null,
+        _themeElementString = "",
         _proxyUrl = proxyUrl,
         _id = themeId,
         _title = themeTitle,
@@ -1132,7 +1223,7 @@ function ColorMunchTheme(themeId, themeTitle, themeDescription, themeImage, them
      *
      */
     self.getId = function() {
-        return _td;
+        return _id;
     };
 
     /**
@@ -1266,6 +1357,21 @@ function ColorMunchTheme(themeId, themeTitle, themeDescription, themeImage, them
     };
 
     /**
+     * Get a random tag from this theme
+     *
+     * @return A random tag string
+     *
+     */
+    self.getRandomTag = function() {
+        if (_tags.length > 0) {
+            var random = Math.floor(Math.random() * (_tags.length));
+            return _tags[random];
+        } else {
+            return null;
+        }
+    };
+
+    /**
      * Get the theme's created date
      *
      * @return Theme created date
@@ -1314,6 +1420,43 @@ function ColorMunchTheme(themeId, themeTitle, themeDescription, themeImage, them
         return _themeElement;
     };
 
+    /**
+     * Get the theme element as a HTML string based on the ColorMunch.THEME_TEMPLATE
+     *
+     * @return Theme swatches element HTML string
+     *
+     */
+    self.getElementString = function(refresh) {
+        if (_themeElementString === "" || refresh) {
+            var tplTags,
+                swatchesString,
+                data,
+                tag,
+                regex,
+                i,
+                n;
+            data = self.getData();
+            _themeElementString = ColorMunch.THEME_TEMPLATE;
+            tplTags = _themeElementString.match(/{{\s*[\w\.]+\s*}}/g).map(function(x) { return x.match(/[\w\.]+/)[0]; }).getUnique();
+            for (i = 0; i < tplTags.length; i++) {
+                tag = tplTags[i];
+                if (data.hasOwnProperty(tag)) {
+                    regex = new RegExp('{{' + tag + '}}', 'g');
+                    if (tag !== "swatches") {
+                        _themeElementString = _themeElementString.replace(regex, data[tag].toString());
+                    } else {
+                        swatchesString = "";
+                        for (n = 0; n < _swatches.length; n++) {
+                            swatchesString += _swatches[n].getElementString(true);
+                        }
+                        _themeElementString = _themeElementString.replace(regex, swatchesString);
+                    }
+                }
+            }
+        }
+        return _themeElementString;
+    };
+
 
     /**
      * Check if the comments for this theme have been loaded
@@ -1343,8 +1486,8 @@ function ColorMunchTheme(themeId, themeTitle, themeDescription, themeImage, them
      * @return Comments for this theme. Each array item is a ColorMunchComment instance
      *
      */
-    self.getAllComments = function() {
-        return (_commentsAreLoaded) ? _commentsFeed.getAllComments() : null;
+    self.getComments = function() {
+        return (_commentsAreLoaded) ? _commentsFeed.getComments() : null;
     };
 
     /**
@@ -1369,34 +1512,33 @@ function ColorMunchTheme(themeId, themeTitle, themeDescription, themeImage, them
         return (_commentsAreLoaded) ? _commentsFeed.getRandomComment() : null;
     };
 
-}
-
-/**
- * Get main properties in a single data object
- *
- * @return Object
- *
- */
-ColorMunchTheme.prototype.getData = function() {
-    return {
-        element: this.getElement(),
-        id: this.getId(),
-        title: this.getTitle(),
-        description: this.getDescription(),
-        image: this.getImage(),
-        link: this.getLink(),
-        rating: this.getRating(),
-        downloadCount: this.getDownloadCount(),
-        author: this.getAuthor(),
-        authorId: this.getAuthorId(),
-        tags: this.getTags(),
-        createdDate: this.getCreatedDate(),
-        editedDate: this.getEditedDate(),
-        swatches: this.getSwatches(),
-        commentsLoaded: this.getCommentsLoaded(),
-        comments: this.getAllComments()
+    /**
+     * Get main properties in a single data object
+     *
+     * @return Object
+     *
+     */
+    self.getData = function() {
+        return {
+            id: _id,
+            title: _title,
+            description: _description,
+            image: _image,
+            link: _link,
+            rating: _rating,
+            downloadCount: _downloadCount,
+            author: _author,
+            authorId: _authorId,
+            tags: _tags,
+            createdDate: _createdDate,
+            editedDate: _editedDate,
+            swatches: _swatches,
+            commentsLoaded: _commentsAreLoaded,
+            comments: self.getComments()
+        };
     };
-};
+
+}
 
 /**
  * Override the toString method
@@ -1405,6 +1547,7 @@ ColorMunchTheme.prototype.getData = function() {
  *
  */
 ColorMunchTheme.prototype.toString = function() {
+    "use strict";
     return this.getDescription();
 };
 
@@ -1418,6 +1561,7 @@ function ColorMunchEvent() {
     "use strict";
     var self = this,
         eventList = {};
+
 
     self.addEventListener = function (eventName, callback) {
         if (!eventList[eventName]) {
@@ -1466,7 +1610,7 @@ function ColorMunchEvent() {
 }
 
 // Complete event
-ColorMunchEvent.COMPLETE = "complete";
+ColorMunchEvent.COMPLETE = "cm.complete";
 
 // Failed event
 ColorMunchEvent.FAILED = "cm.failed";
@@ -1582,3 +1726,22 @@ function ColorMunchFeedLoader(proxyUrl) {
     };
 
 }
+
+
+/**
+ * Return an array with unique values
+ * Only really works with simple array elements, which is fine for ColorMunch usage (strings)
+ *
+ */
+Array.prototype.getUnique = function(){
+    "use strict";
+    var u = {}, a = [];
+    for(var i = 0, l = this.length; i < l; ++i){
+        if(u.hasOwnProperty(this[i])) {
+            continue;
+        }
+        a.push(this[i]);
+        u[this[i]] = 1;
+    }
+    return a;
+};

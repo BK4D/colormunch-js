@@ -105,7 +105,9 @@ for (i = 0; i < swatches.length; i++) {
 }
 ```
 
-ColorMunchThemes and ColorMunchSwatch instances have a getElement method, which returns a DOM element you can use.
+#### Theme / swatch elements
+
+ColorMunchTheme and ColorMunchSwatch instances have a getElement method, which returns a DOM element you can use.
 
 When you call getElement on a ColorMunchTheme it will call getElement on all its swatches and build a theme element
 
@@ -120,13 +122,13 @@ The theme element markup looks like the following:
 	<div class="cm-swatch cm-swatch--2" style="background-color: rgb(232, 97, 85);">
 		<span class="cm-swatch-label">E86155</span>
 	</div>
-	<div class="cm-swatch cm-swatch--dark cm-swatch--3" style="background-color: rgb(106, 191, 187);">
+	<div class="cm-swatch cm-swatch--dark-true cm-swatch--3" style="background-color: rgb(106, 191, 187);">
 		<span class="cm-swatch-label">6ABFBB</span>
 	</div>
 	<div class="cm-swatch cm-swatch--4" style="background-color: rgb(215, 224, 242);">
 		<span class="cm-swatch-label">D7E0F2</span>
 	</div>
-	<div class="cm-swatch cm-swatch--dark cm-swatch--5" style="background-color: rgb(50, 41, 71);">
+	<div class="cm-swatch cm-swatch--dark-true cm-swatch--5" style="background-color: rgb(50, 41, 71);">
 		<span class="cm-swatch-label">322947</span>
 	</div>
 </div>
@@ -141,6 +143,70 @@ var themeEl = theme.getElement();
 themeEl.style.width = '100%';
 themeEl.style.height = '100px';
 document.body.appendChild(themeEl);
+```
+
+
+If you prefer to just deal with HTML strings you can use the ColorMunchTheme and ColorMunchSwatch instance's getElementString method.
+
+By default the returned value is essentially a string representation of the getElement result:
+
+```javascript
+// default theme template string
+'<div id="cm-theme_{{id}}" class="cm-theme"><span class="cm-theme-label">{{title}}</span>{{swatches}}</div>'
+// default swatch template string
+'<div class="cm-swatch cm-swatch--{{index}} cm-swatch--dark-{{isDark}}" style="background-color:{{hexColor}};"><span class="cm-swatch-label">{{hexColor}}</span></div>'
+```
+
+The great part about the templates is that you can actually customise them. It's just very basic mustache-like tags and you can use any of the properties found in the getData result that return string values. The exception is with the theme template where you can use the 'swatches' property which will include the result of getElementString from each of the swatches in the theme.
+
+To override the templates simply set ColorMunch.THEME_TEMPLATE and/or ColorMunch.SWATCH_TEMPLATE to your own template strings.
+
+```javascript
+// Customise the templates to output the theme as an unordered list
+ColorMunch.THEME_TEMPLATE = '<h3>{{title}}</h3><ul>{{swatches}}</ul>';
+ColorMunch.SWATCH_TEMPLATE = '<li>{{hexColor}}</li>';
+```
+
+The return string is only created the first time you call getElementString on a ColorMunchTheme and/or ColorMunchSwatch instance and then stored in a local variable.
+
+If you change the template after having already called the getElementString method then you will need to tell it to refresh the next time you call it by passing in the boolean value as a parameter, else you will continue to get back the old string template/markup
+
+```javascript
+// Customise the templates to output the theme as an unordered list
+ColorMunch.THEME_TEMPLATE = '<h3>{{title}}</h3><ul>{{swatches}}</ul>';
+ColorMunch.SWATCH_TEMPLATE = '<li>{{hexColor}}</li>';
+
+var theme = cm.getRandomTheme();
+console.log(theme.getElementString());
+// The above will output something like:
+// '<h3>Color Cube</h3><ul><li>12263C</li><li>EBEDE7</li><li>E3C720</li><li>2B3952</li><li>45130C</li></ul>'
+
+// Now change the templates
+ColorMunch.THEME_TEMPLATE = '<h3 class="theme-title">{{title}}</h3><ul class="theme-swatches">{{swatches}}</ul>';
+ColorMunch.SWATCH_TEMPLATE = '<li style="color:#{{hexColor}};">{{hexColor}}</li>';
+console.log(theme.getElementString());
+// The above will still output the old string because we haven't told it to refresh
+
+console.log(theme.getElementString(true)); // the true value tells it to refresh, and this boolean is passed into the getElementString calls on that swatches
+// The output will now be correctly updated to something like:
+// '<h3 class="theme-title">Color Cube</h3><ul><li style="color:#12263C;">12263C</li><li style="color:#EBEDE7;">EBEDE7</li><li style="color:#E3C720;">E3C720</li><li style="color:#2B3952;">2B3952</li><li style="color:#45130C;">45130C</li></ul>'
+```
+
+The default templates can always be accessed via static getter methods.
+
+```javascript
+// If you have overridden the templates and want to reset them to their defaults:
+ColorMunch.THEME_TEMPLATE = ColorMunch.getDefaultThemeTemplate();
+ColorMunch.SWATCH_TEMPLATE = ColorMunch.getDefaultSwatchTemplate();
+```
+
+The ColorMunch instance also has a couple of handy methods for getting all the theme elements and element strings in a single array
+```javascript
+var allElements = cm.getThemeElements();
+var allElementStrings = cm.getThemeElementStrings();
+
+// this is quick way to 'refresh' all the themes after changing the template
+var allRefreshedElementStrings = cm.getThemeElementStrings(true);
 ```
 
 
