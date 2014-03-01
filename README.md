@@ -159,6 +159,8 @@ By default the returned value is essentially a string representation of the getE
 
 The great part about the templates is that you can actually customise them. It's just very basic mustache-like tags and you can use any of the properties found in the getData result that return string values. The exception is with the theme template where you can use the 'swatches' property which will include the result of getElementString from each of the swatches in the theme.
 
+If you're wanting to do something more complex then just write your own methods for outputting elements or markup using any of the data available in themes and swatches.
+
 To override the templates simply set ColorMunch.THEME_TEMPLATE and/or ColorMunch.SWATCH_TEMPLATE to your own template strings.
 
 ```javascript
