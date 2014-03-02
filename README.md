@@ -230,7 +230,7 @@ The ColorMunch instance also has a couple of handy methods for getting all the t
 var allElements = cm.getThemeElements();
 var allElementStrings = cm.getThemeElementStrings();
 
-// this is quick way to 'refresh' all the themes after changing the template
+// this is a quick way to 'refresh' all the themes after changing the template
 var allRefreshedElementStrings = cm.getThemeElementStrings(true);
 ```
 
