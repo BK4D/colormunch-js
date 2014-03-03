@@ -401,4 +401,4 @@ console.log(comment.toString());
 
 Basic Example
 -------
-http://jsfiddle.net/6CxVL/3/
+http://jsfiddle.net/6ztb9/
